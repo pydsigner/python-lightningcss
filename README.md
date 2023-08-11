@@ -10,6 +10,15 @@ Python-centric web application rather than a JavaScript-based workflow. If the
 latter is needed, consider using the [official npm lightningcss module, parcel,
 or webpack](https://lightningcss.dev/docs.html) instead.
 
+## Installation
+
+python-lightningcss includes wheels which can be installed for most platforms
+using pip: `pip install lightningcss`.
+
+Alternatively, python-lightningcss may be installed directly from source:
+`pip install git+https://github.com/pydsigner/python-lightningcss`. This will
+require that the Rust toolchain be installed.
+
 ## Usage
 
 ```py
