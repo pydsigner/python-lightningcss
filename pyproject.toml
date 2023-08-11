@@ -1,0 +1,38 @@
+[build-system]
+requires = ["maturin>=1.2,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "lightningcss"
+description = "Python bindings for lightningcss."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {"text" = "Apache-2.0"}
+authors = [
+    {"name" = "Daniel Foerster", "email" = "pydsigner@gmail.com"},
+]
+keywords = ["css", "minify"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Pre-processors",
+]
+
+[project.urls]
+Source = "https://github.com/pydsigner/python-lightningcss"
+
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
