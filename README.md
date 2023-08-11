@@ -1,3 +1,7 @@
+[![PyPI - Project Version](https://img.shields.io/pypi/v/lightningcss)](https://pypi.org/project/lightningcss)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lightningcss)](https://pypi.org/project/anchovy)
+[![GitHub - Project License](https://img.shields.io/github/license/pydsigner/python-lightningcss)](https://github.com/pydsigner/python-lightningcss)
+
 # python-lightningcss
 
 python-lightningcss offers PyO3 bindings to the lightningcss library. Presently
