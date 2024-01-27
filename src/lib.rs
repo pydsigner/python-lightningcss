@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use browserslist::Error as BrowserslistError;
+use browserslist::error::Error as BrowserslistError;
 use lightningcss::stylesheet::{StyleSheet, MinifyOptions, ParserFlags, ParserOptions, PrinterOptions};
 use lightningcss::targets::{Browsers, Targets};
 
