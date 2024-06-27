@@ -112,7 +112,7 @@ fn mk_printer_options<'a>(targets: &Targets,
 /// A python wrapper for core functionality of lightningcss.
 #[pymodule]
 #[pyo3(name = "lightningcss")]
-fn pylightningcss(_py: Python, m: &PyModule) -> PyResult<()> {
+fn pylightningcss(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(process_stylesheet, m)?)?;
     m.add_function(wrap_pyfunction!(calc_parser_flags, m)?)?;
     Ok(())
