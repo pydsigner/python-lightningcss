@@ -9,6 +9,6 @@ name = "lightningcss"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = "0.19.0"
-browserslist-rs = "0.12.4"
-lightningcss = { version = "1.0.0-alpha.52", features = ["browserslist"] }
+pyo3 = { version = "0.22.0", features = ["extension-module"] }
+browserslist-rs = "0.15.0"
+lightningcss = { version = "1.0.0-alpha.57", features = ["browserslist"] }
