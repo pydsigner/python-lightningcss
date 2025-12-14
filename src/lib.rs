@@ -1,10 +1,14 @@
 use std::collections::HashSet;
+use std::path::Path;
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
 use browserslist::Error as BrowserslistError;
-use lightningcss::stylesheet::{StyleSheet, MinifyOptions, ParserFlags, ParserOptions, PrinterOptions};
+use lightningcss::bundler::{Bundler, FileProvider};
+use lightningcss::stylesheet::{
+    MinifyOptions, ParserFlags, ParserOptions, PrinterOptions, StyleSheet,
+};
 use lightningcss::targets::{Browsers, Targets};
 
 /// Processes provided CSS and returns as a string.
@@ -109,11 +113,71 @@ fn mk_printer_options<'a>(targets: &Targets,
     };
 }
 
+/// Bundles a CSS file and returns as a string.
+#[pyfunction]
+#[pyo3(signature = (
+    path="",
+    /,
+    error_recovery=false,
+    parser_flags=0,
+    unused_symbols=None,
+    browsers_list=None,
+    minify=true,
+))]
+fn bundle_css(
+    path: &str,
+    error_recovery: bool,
+    parser_flags: u8,
+    unused_symbols: Option<HashSet<String>>,
+    browsers_list: Option<Vec<String>>,
+    minify: bool,
+) -> PyResult<String> {
+    let fs = FileProvider::new();
+    let mut bundler = Bundler::new(
+        &fs,
+        None,
+        ParserOptions {
+            error_recovery: error_recovery,
+            flags: ParserFlags::from_bits_truncate(parser_flags),
+            ..Default::default()
+        },
+    );
+    let mut stylesheet = bundler.bundle(Path::new(path)).unwrap();
+
+    let targets = match mk_targets(browsers_list) {
+        Ok(val) => val,
+        Err(e) => {
+            return Err(PyValueError::new_err(format!(
+                "browsers_list failed validation: {}",
+                e.to_string()
+            )))
+        }
+    };
+
+    match stylesheet.minify(mk_minify_options(unused_symbols, &targets)) {
+        Ok(_) => {}
+        Err(e) => {
+            return Err(PyValueError::new_err(format!(
+                "Minifying stylesheet failed: {}",
+                e.to_string()
+            )));
+        }
+    }
+    return match stylesheet.to_css(mk_printer_options(&targets, minify)) {
+        Ok(val) => Ok(val.code),
+        Err(e) => Err(PyValueError::new_err(format!(
+            "Printing stylesheet failed: {}",
+            e.to_string()
+        ))),
+    };
+}
+
 /// A python wrapper for core functionality of lightningcss.
 #[pymodule]
 #[pyo3(name = "lightningcss")]
 fn pylightningcss(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(process_stylesheet, m)?)?;
     m.add_function(wrap_pyfunction!(calc_parser_flags, m)?)?;
+    m.add_function(wrap_pyfunction!(bundle_css, m)?)?;
     Ok(())
 }
