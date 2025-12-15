@@ -4,6 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "lightningcss"
+dynamic = ["version"]
 description = "Python bindings for lightningcss."
 readme = "README.md"
 requires-python = ">=3.7"
