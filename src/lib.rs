@@ -1,11 +1,11 @@
 use std::collections::HashSet;
 use std::path::Path;
 
-use pyo3::exceptions::PyValueError;
+use pyo3::exceptions::{PyValueError, PyIOError};
 use pyo3::prelude::*;
 
 use browserslist::Error as BrowserslistError;
-use lightningcss::bundler::{Bundler, FileProvider};
+use lightningcss::bundler::{Bundler, FileProvider, BundleErrorKind};
 use lightningcss::stylesheet::{
     MinifyOptions, ParserFlags, ParserOptions, PrinterOptions, StyleSheet,
 };
@@ -49,7 +49,7 @@ fn process_stylesheet(code: &str,
 
     let targets = match mk_targets(browsers_list) {
         Ok(val) => val,
-        Err(e) => {return Err(PyValueError::new_err(format!("browsers_list failed validation: {}", e.to_string())))}
+        Err(e) => {return Err(PyValueError::new_err(format!("Browsers_list failed validation: {}", e.to_string())))}
     };
     let mut stylesheet = match StyleSheet::parse(code, mk_parser_options(filename, error_recovery, parser_flags)) {
         Ok(val) => val,
@@ -142,7 +142,23 @@ fn bundle_css(
             ..Default::default()
         },
     );
-    let mut stylesheet = bundler.bundle(Path::new(path)).unwrap();
+
+    let mut stylesheet = match bundler.bundle(Path::new(path)) {
+        Ok(s) => s,
+        Err(e) => {
+            let message = e.to_string();
+            match e.kind {
+                // Resolver errors, probably related to file I/O
+                BundleErrorKind::ResolverError(_) => {
+                    return Err(PyIOError::new_err(format!("Bundling failed: {}", message)));
+                }
+                // Parser and logical errors
+                _ => {
+                    return Err(PyValueError::new_err(format!("Bundling failed: {}", message)));
+                }
+            }
+        }
+    };
 
     let targets = match mk_targets(browsers_list) {
         Ok(val) => val,
