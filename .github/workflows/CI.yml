@@ -87,6 +87,33 @@ jobs:
           name: wheels-${{ runner.os }}-${{ matrix.target }}
           path: dist/*
 
+  test:
+    name: Test wheels on ${{ matrix.os }} (${{ matrix.python-version }})
+    needs: linux
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ['3.10']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Download x86_64 wheels
+        uses: actions/download-artifact@v4
+        with:
+          name: wheels-Linux-x86_64
+          path: dist
+      - name: Install wheel and dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --no-index --find-links=dist lightningcss
+          pip install --group dev
+      - name: Run tests
+        run: pytest
+
   sdist:
     runs-on: ubuntu-latest
     steps:
