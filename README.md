@@ -13,11 +13,15 @@ or webpack](https://lightningcss.dev/docs.html) instead.
 ## Installation
 
 python-lightningcss includes wheels which can be installed for most platforms
-using pip: `pip install lightningcss`.
+using pip:
+
+    $ pip install lightningcss
 
 Alternatively, python-lightningcss may be installed directly from source:
-`pip install git+https://github.com/pydsigner/python-lightningcss`. This will
-require that the Rust toolchain be installed.
+
+    $ pip install git+https://github.com/pydsigner/python-lightningcss
+
+This will require that the Rust toolchain be installed.
 
 ## Usage
 
@@ -25,13 +29,42 @@ require that the Rust toolchain be installed.
 import lightningcss
 
 parser_flags = lightningcss.calc_parser_flags(nesting=True)
+
 input_css = """
-a {
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
+.navbar {
+    margin: 0;
+
+    a {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
 }
 """
-output_css = lightningcss.process_stylesheet(input_css, filename="abc.css", browsers_list=['defaults'])
+
+output_css = lightningcss.process_stylesheet(
+    input_css,
+    filename="abc.css",
+    parser_flags = parser_flags,
+    browsers_list = ['defaults'],
+    minify = True,
+)
 ```
+
+This package also supports creating a CSS bundle where all `@import` rules are
+resolved into a single stylesheet:
+
+```py
+bundled_css = lightningcss.bundle_css(
+    "main.css",
+    filename = "main.css",
+    browsers_list = ["defaults"],
+    minify = False,
+)
+```
+
+All resources referenced via `@import` are resolved relative to the main file. The
+`filename` keyword parameter is only used for displaying error messages from the
+parser. When using `browsers_list`, lightningcss will try to transpile the code
+to be compatible with the specified [browserslist target](https://browsersl.ist/).
