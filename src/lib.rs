@@ -49,7 +49,7 @@ fn process_stylesheet(code: &str,
 
     let targets = match mk_targets(browsers_list) {
         Ok(val) => val,
-        Err(e) => {return Err(PyValueError::new_err(format!("Browsers_list failed validation: {}", e.to_string())))}
+        Err(e) => {return Err(PyValueError::new_err(format!("Validation of browsers_list failed: {}", e.to_string())))}
     };
     let mut stylesheet = match StyleSheet::parse(code, mk_parser_options(filename, error_recovery, parser_flags)) {
         Ok(val) => val,
