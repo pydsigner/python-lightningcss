@@ -12,7 +12,7 @@ def calc_parser_flags(
     deep_selector_combinator: bool = False
 ) -> ParserFlags:
     """
-    Calculates the `parser_flags` argument of `process_stylesheet()`.
+    Calculates the `parser_flags` argument of `process_stylesheet()` and `bundle_css()`.
     """
 
 def process_stylesheet(
@@ -42,7 +42,40 @@ def process_stylesheet(
     :param browsers_list: An optional list of browserslist targets to be used
         to determine automatic prefixing and transpilation. If it is not
         specified, no prefixing/transpilation will occur.
-    :param minify: Is True, the final output will be minified. Otherwise, it
+    :param minify: If True, the final output will be minified. Otherwise, it
         will be pretty-printed.
     :return: A string containing a processed CSS stylesheet.
+    """
+
+def bundle_css(
+    path: str,
+    /,
+    error_recovery: bool = False,
+    parser_flags: ParserFlags = ParserFlags(0),
+    unused_symbols: set[str] | None = None,
+    browsers_list: list[str] | None = None,
+    minify: bool = True
+) -> str:
+    """
+    Processes the supplied CSS stylesheet file and returns the bundle as a string.
+
+    Resolves all `@import` rules to create a single CSS bundle. The resources
+    referenced via `@import` are resolved relative to the main file.
+
+    :param path: A string containing the path of the stylesheet file to process.
+    :param error_recovery: Whether or not to omit broken CSS rather than
+        producing a parse error. Enable with caution!
+    :param parser_flags: An optional flag created by `calc_parser_flags()`.
+        See that function for more details.
+    :param unused_symbols: An optional set of known unused symbols, like
+        classnames, ids, or keyframe names, to be removed from the output.
+        Note that symbols should be specified in bare form, i.e.
+        `unused_symbols={'a', 'b'}`, not `unused_symbols={'.a', '#b'}`, and
+        will remove both ids and classes if they share a name. Use with caution!
+    :param browsers_list: An optional list of browserslist targets to be used
+        to determine automatic prefixing and transpilation. If it is not
+        specified, no prefixing/transpilation will occur.
+    :param minify: If True, the final output will be minified. Otherwise, it
+        will be pretty-printed.
+    :return: A string containing the CSS bundle.
     """

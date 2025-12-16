@@ -52,19 +52,20 @@ output_css = lightningcss.process_stylesheet(
 )
 ```
 
+The `filename` keyword parameter is only used for displaying error messages from
+the parser. When using `browsers_list`, lightningcss will try to transpile the
+code to be compatible with the specified
+[browserslist target](https://browsersl.ist/).
+
 This package also supports creating a CSS bundle where all `@import` rules are
 resolved into a single stylesheet:
 
 ```py
 bundled_css = lightningcss.bundle_css(
     "main.css",
-    filename = "main.css",
     browsers_list = ["defaults"],
     minify = False,
 )
 ```
 
-All resources referenced via `@import` are resolved relative to the main file. The
-`filename` keyword parameter is only used for displaying error messages from the
-parser. When using `browsers_list`, lightningcss will try to transpile the code
-to be compatible with the specified [browserslist target](https://browsersl.ist/).
+All resources referenced via `@import` are resolved relative to the main file.
