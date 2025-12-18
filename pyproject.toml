@@ -37,6 +37,10 @@ classifiers = [
 [project.urls]
 Source = "https://github.com/pydsigner/python-lightningcss"
 
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
