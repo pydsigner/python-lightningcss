@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::path::Path;
 
-use pyo3::exceptions::{PyValueError, PyIOError};
+use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 
 use browserslist::Error as BrowserslistError;
@@ -189,11 +189,12 @@ fn bundle_css(
 }
 
 /// A python wrapper for core functionality of lightningcss.
-#[pymodule]
-#[pyo3(name = "lightningcss")]
-fn pylightningcss(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(process_stylesheet, m)?)?;
-    m.add_function(wrap_pyfunction!(calc_parser_flags, m)?)?;
-    m.add_function(wrap_pyfunction!(bundle_css, m)?)?;
-    Ok(())
+#[pymodule(name = "lightningcss")]
+mod py_lightningcss {
+    #[pymodule_export]
+    use super::calc_parser_flags;
+    #[pymodule_export]
+    use super::process_stylesheet;
+    #[pymodule_export]
+    use super::bundle_css;
 }
