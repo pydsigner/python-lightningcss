@@ -76,11 +76,11 @@ fn calc_parser_flags(nesting: bool, custom_media: bool, deep_selector_combinator
     return flags;
 }
 
-fn mk_parser_options(filename: &str,
-                     error_recovery: bool,
-                     parser_flags: u8) -> ParserOptions {
+fn mk_parser_options<'o, 'i>(filename: &'o str,
+                             error_recovery: bool,
+                             parser_flags: u8) -> ParserOptions<'o, 'i> {
     return ParserOptions {
-        filename: filename.to_string(),
+        filename: filename.into(),
         error_recovery: error_recovery,
         flags: ParserFlags::from_bits_truncate(parser_flags),
         ..Default::default()
@@ -116,7 +116,7 @@ fn mk_printer_options<'a>(targets: &Targets,
 /// Bundles a CSS file and returns as a string.
 #[pyfunction]
 #[pyo3(signature = (
-    path="",
+    path,
     /,
     error_recovery=false,
     parser_flags=0,
@@ -143,7 +143,7 @@ fn bundle_css(
         },
     );
 
-    let mut stylesheet = match bundler.bundle(Path::new(path)) {
+    let mut stylesheet = match bundler.bundle(Path::new(&path)) {
         Ok(s) => s,
         Err(e) => {
             let message = e.to_string();
