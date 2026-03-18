@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.28.2", features = ["extension-module"] }
 browserslist-rs = "0.19.0"
-lightningcss = { version = "1.0.0-alpha.71", features = ["browserslist"] }
+lightningcss = { version = "1.0.0-alpha.71", features = ["browserslist", "visitor"] }
